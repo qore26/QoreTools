@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, maximum-scale=5.0, user-scalable=yes">
+    <meta name="description" content="QoreTools - Beautiful file conversion platform. Convert PDF, images, documents, and more with stunning animations.">
+    <meta name="theme-color" content="#6366f1">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="dark">
+    <meta name="apple-mobile-web-app-title" content="QoreTools">
+    <title>QoreTools - File Conversion Made Easy</title>
+    <link rel="icon" type="image/x-icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🔄</text></svg>">
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-content">
+                <div class="logo-container">
+                    <div class="logo">
+                        <span class="logo-text">Qore</span>
+                        <div class="logo-glow"></div>
+                    </div>
+                </div>
+                <ul class="nav-links">
+                    <li><a href="#features">Features</a></li>
+                    <li><a href="#converter">Converter</a></li>
+                    <li><a href="#formats">Formats</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container">
+            <div class="hero-content">
+                <h1 class="hero-title">
+                    <span class="word">Convert</span>
+                    <span class="word">Your</span>
+                    <span class="word">Files</span>
+                    <span class="highlight">Instantly</span>
+                </h1>
+                <p class="hero-subtitle">Transform documents, images, and more with a single click. Fast, secure, and beautiful.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Main Converter Section -->
+    <section id="converter" class="converter-section">
+        <div class="container">
+            <div class="converter-wrapper">
+                <!-- Left Panel: Format Selection -->
+                <div class="format-panel">
+                    <h2>Select Conversion</h2>
+                    
+                    <div class="format-group">
+                        <label for="sourceFormat">From Format</label>
+                        <select id="sourceFormat" class="format-select">
+                            <option value="">Select source format...</option>
+                            <optgroup label="Documents">
+                                <option value="pdf">PDF</option>
+                                <option value="docx">Word (DOCX)</option>
+                                <option value="doc">Word (DOC)</option>
+                                <option value="txt">Text (TXT)</option>
+                                <option value="xlsx">Excel (XLSX)</option>
+                                <option value="pptx">PowerPoint (PPTX)</option>
+                            </optgroup>
+                            <optgroup label="Images">
+                                <option value="jpg">JPEG</option>
+                                <option value="png">PNG</option>
+                                <option value="gif">GIF</option>
+                                <option value="bmp">BMP</option>
+                                <option value="webp">WebP</option>
+                                <option value="svg">SVG</option>
+                            </optgroup>
+                            <optgroup label="Archives">
+                                <option value="zip">ZIP</option>
+                                <option value="rar">RAR</option>
+                                <option value="7z">7Z</option>
+                            </optgroup>
+                        </select>
+                    </div>
+
+                    <div class="format-group">
+                        <label for="targetFormat">To Format</label>
+                        <select id="targetFormat" class="format-select">
+                            <option value="">Select target format...</option>
+                        </select>
+                    </div>
+
+                    <div class="conversion-options">
+                        <div class="option-group">
+                            <label for="quality">Quality</label>
+                            <div class="slider-container">
+                                <input type="range" id="quality" min="50" max="100" value="90" class="slider">
+                                <span id="qualityValue">90%</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right Panel: Upload Zone -->
+                <div class="upload-panel">
+                    <div class="upload-zone" id="uploadZone">
+                        <div class="upload-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                                <polyline points="17 8 12 3 7 8"></polyline>
+                                <line x1="12" y1="3" x2="12" y2="15"></line>
+                            </svg>
+                        </div>
+                        <h3>Drop your file here</h3>
+                        <p>or click to browse</p>
+                        <input type="file" id="fileInput" class="file-input" hidden>
+                    </div>
+
+                    <!-- File Info Section -->
+                    <div class="file-info" id="fileInfo" style="display: none;">
+                        <div class="file-card">
+                            <div class="file-icon" id="fileIcon">📄</div>
+                            <div class="file-details">
+                                <p class="file-name" id="fileName"></p>
+                                <p class="file-size" id="fileSize"></p>
+                            </div>
+                            <button class="btn-remove" onclick="removeFile()">×</button>
+                        </div>
+
+                        <div class="conversion-progress" id="conversionProgress" style="display: none;">
+                            <p>Converting your file...</p>
+                            <div class="progress-bar">
+                                <div class="progress-fill" id="progressFill"></div>
+                            </div>
+                            <p id="progressText">0%</p>
+                        </div>
+
+                        <button class="btn-convert" id="convertBtn" onclick="convertFile()">
+                            <span>Convert File</span>
+                            <span class="btn-arrow">→</span>
+                        </button>
+                    </div>
+
+                    <!-- Result Section -->
+                    <div class="result-section" id="resultSection" style="display: none;">
+                        <div class="success-message">
+                            <div class="success-icon">✓</div>
+                            <p>Conversion Complete!</p>
+                        </div>
+
+                        <div class="result-file-card">
+                            <div class="file-icon" id="resultFileIcon">📄</div>
+                            <div class="file-details">
+                                <p class="file-name" id="resultFileName"></p>
+                                <p class="file-size" id="resultFileSize"></p>
+                            </div>
+                        </div>
+
+                        <div class="result-preview" id="resultPreview"></div>
+
+                        <div class="result-actions">
+                            <button class="btn-download" onclick="downloadFile()">
+                                <span>Download</span>
+                                <span>⬇</span>
+                            </button>
+                            <button class="btn-convert-another" onclick="convertAnother()">
+                                <span>Convert Another</span>
+                                <span>+</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section id="features" class="features-section">
+        <div class="container">
+            <h2>Why Choose QoreTools?</h2>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">⚡</div>
+                    <h3>Lightning Fast</h3>
+                    <p>Convert files in seconds with our optimized engine</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🔒</div>
+                    <h3>Secure & Private</h3>
+                    <p>Your files are processed securely and deleted after conversion</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">📱</div>
+                    <h3>All Devices</h3>
+                    <p>Works seamlessly on desktop, tablet, and mobile devices</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🎨</div>
+                    <h3>High Quality</h3>
+                    <p>Maintain excellent quality with adjustable settings</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Formats Section -->
+    <section id="formats" class="formats-section">
+        <div class="container">
+            <h2>Supported Formats</h2>
+            <div class="formats-grid">
+                <div class="format-badge">PDF</div>
+                <div class="format-badge">JPG</div>
+                <div class="format-badge">PNG</div>
+                <div class="format-badge">DOCX</div>
+                <div class="format-badge">XLSX</div>
+                <div class="format-badge">GIF</div>
+                <div class="format-badge">PPTX</div>
+                <div class="format-badge">WebP</div>
+                <div class="format-badge">SVG</div>
+                <div class="format-badge">ZIP</div>
+                <div class="format-badge">And More</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2026 QoreTools. All rights reserved. | Transforming files, beautifully.</p>
+        </div>
+    </footer>
+
+    <script src="js/app.js"></script>
+</body>
+</html>

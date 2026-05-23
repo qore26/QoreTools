@@ -1,0 +1,12 @@
+services:
+  - type: web
+    name: qoretools
+    env: dotnet
+    plan: free
+    buildCommand: dotnet build -c Release
+    startCommand: dotnet QoreTools.dll --urls "http://0.0.0.0:${PORT}"
+    envVars:
+      - key: ASPNETCORE_ENVIRONMENT
+        value: Production
+      - key: ASPNETCORE_URLS
+        value: http://0.0.0.0:10000
