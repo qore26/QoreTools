@@ -27,42 +27,13 @@ if (!app.Environment.IsDevelopment())
 app.UseStaticFiles();
 app.UseCors("AllowAll");
 
-// Route static index.html for root
-app.MapGet("/", async (HttpContext httpContext) =>
-{
-    var wwwroot = Path.Combine(AppContext.BaseDirectory, "..", "..", "..", "wwwroot");
-    var indexPath = Path.Combine(wwwroot, "index.html");
-    
-    if (!File.Exists(indexPath))
-    {
-        indexPath = Path.Combine(AppContext.BaseDirectory, "wwwroot", "index.html");
-    }
-    
-    if (File.Exists(indexPath))
-    {
-        httpContext.Response.ContentType = "text/html";
-        await httpContext.Response.SendFileAsync(indexPath);
-    }
-    else
-    {
-        httpContext.Response.StatusCode = StatusCodes.Status404NotFound;
-        await httpContext.Response.WriteAsync("Index file not found");
-    }
-});
-
 // Map controllers for API
 app.MapControllers();
 
 // Fallback to index.html for SPA routing
 app.MapFallback(async (HttpContext httpContext) =>
 {
-    var wwwroot = Path.Combine(AppContext.BaseDirectory, "..", "..", "..", "wwwroot");
-    var indexPath = Path.Combine(wwwroot, "index.html");
-    
-    if (!File.Exists(indexPath))
-    {
-        indexPath = Path.Combine(AppContext.BaseDirectory, "wwwroot", "index.html");
-    }
+    var indexPath = Path.Combine(app.Environment.WebRootPath, "index.html");
     
     if (File.Exists(indexPath))
     {
