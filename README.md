@@ -88,37 +88,92 @@ dotnet publish -c Release -o ./publish
 
 ## Deployment to Render
 
+### Overview
+QoreTools is deployed to Render using **Docker**, since Render doesn't have native .NET runtime support. The Docker configuration automatically builds and runs your .NET application in a containerized environment.
+
 ### Prerequisites
 - Render account (https://render.com)
 - GitHub repository with your code
+- The project includes `Dockerfile` and `render.yaml` for automatic deployment
 
 ### Deployment Steps
 
-1. **Push to GitHub**
-   - Create a GitHub repository
-   - Push the QoreTools project to GitHub
+#### 1. Push to GitHub
+```bash
+git add .
+git commit -m "Add Docker configuration"
+git push origin main
+```
 
-2. **Connect to Render**
-   - Go to https://render.com
-   - Click "New +" and select "Web Service"
-   - Connect your GitHub account
-   - Select the QoreTools repository
+Ensure these files are committed:
+- `Dockerfile` - Multi-stage build configuration
+- `.dockerignore` - Docker build optimization
+- `render.yaml` - Render deployment configuration
+- `QoreTools.csproj` - Project file with dependencies
 
-3. **Configure Deployment**
-   - **Name**: QoreTools
-   - **Environment**: .NET
-   - **Build Command**: `dotnet build -c Release`
-   - **Start Command**: `dotnet QoreTools.dll --urls "http://0.0.0.0:${PORT}"`
-   - **Instance Type**: Free (or paid for better performance)
+#### 2. Connect Repository to Render
 
-4. **Environment Variables**
-   - Add `ASPNETCORE_ENVIRONMENT=Production`
-   - Add `ASPNETCORE_URLS=http://0.0.0.0:10000` (Render uses port 10000)
+1. Go to https://render.com and sign in
+2. Click **"New +"** → **"Web Service"**
+3. Select **"Build and deploy from a Git repository"**
+4. Connect your GitHub account and select the QoreTools repository
+5. Fill in the following settings:
+   - **Name**: `qoretools` (or your preferred name)
+   - **Region**: Choose closest to you
+   - **Branch**: `main` (or your default branch)
+   - **Runtime**: Docker (should auto-detect from Dockerfile)
+   - **Plan**: Free tier (or upgrade as needed)
 
-5. **Deploy**
-   - Click "Create Web Service"
-   - Wait for the deployment to complete
-   - Your site will be available at `https://your-app-name.onrender.com`
+#### 3. Environment Variables
+Render will automatically use the variables from `render.yaml`. The following are pre-configured:
+- `ASPNETCORE_ENVIRONMENT=Production`
+- `ASPNETCORE_URLS=http://+:8080` (configured in Dockerfile)
+
+#### 4. Deploy
+1. Click **"Create Web Service"**
+2. Render will:
+   - Build the Docker image from your Dockerfile
+   - Push the image to its registry
+   - Deploy and start your container
+3. Monitor the build logs in real-time
+4. Once deployed, your app will be live at: `https://qoretools-xxxxx.onrender.com`
+
+### Accessing Your Deployment
+- **Application URL**: `https://qoretools-xxxxx.onrender.com` (Render auto-assigns a unique subdomain)
+- **API Base URL**: `https://qoretools-xxxxx.onrender.com/api/convert`
+
+### How Docker Deployment Works
+
+The `Dockerfile` uses a **multi-stage build** for efficiency:
+
+1. **Build Stage**: 
+   - Uses `mcr.microsoft.com/dotnet/sdk:10.0` (includes compiler)
+   - Restores NuGet packages
+   - Compiles and publishes the Release build
+   - Creates optimized output in `/app/publish`
+
+2. **Runtime Stage**:
+   - Uses `mcr.microsoft.com/dotnet/aspnet:10.0` (smaller, runtime only)
+   - Copies published output from build stage
+   - Runs the application on port 8080
+   - Sets production environment automatically
+
+### Troubleshooting
+
+**Build fails or deployment errors**:
+- Check the build logs in Render dashboard
+- Ensure all dependencies in `QoreTools.csproj` are compatible
+- Verify GitHub connection is authorized
+
+**Application won't start**:
+- Check runtime logs in Render dashboard
+- Verify `ASPNETCORE_ENVIRONMENT=Production` is set
+- Ensure port binding is correct (should be 8080)
+
+**Slow deployment on free tier**:
+- Free tier instances may spin down after 15 minutes of inactivity
+- Consider upgrading to Starter plan for consistent performance
+- First request after dormancy may take 30+ seconds
 
 ## API Endpoints
 
