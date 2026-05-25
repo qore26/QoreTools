@@ -10,9 +10,12 @@
 
   <ItemGroup>
     <PackageReference Include="SixLabors.ImageSharp" Version="3.1.1" />
-    <PackageReference Include="itext7" Version="7.2.5" />
+    <PackageReference Include="itext7" Version="8.0.5" />
+    <PackageReference Include="itext7.bouncy-castle-adapter" Version="8.0.5" />
     <PackageReference Include="DocumentFormat.OpenXml" Version="3.0.1" />
     <PackageReference Include="SharpZipLib" Version="1.4.2" />
+    <PackageReference Include="Spire.Doc" Version="12.12.0" />
+    <PackageReference Include="Spire.Pdf" Version="10.12.0" />
   </ItemGroup>
 
 </Project>

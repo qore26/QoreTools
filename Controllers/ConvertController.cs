@@ -57,10 +57,18 @@ namespace QoreTools.Controllers
                 // Perform conversion
                 using var stream = file.OpenReadStream();
                 var convertedData = await _conversionService.ConvertFileAsync(stream, sourceFormat, targetFormat, quality);
-
-                // Return the converted file
+                
+                // Ensure content-type is set properly for mobile browsers
                 var contentType = GetContentType(targetFormat);
-                return File(convertedData, contentType, $"converted.{targetFormat}");
+                var response = File(convertedData, contentType, $"converted.{targetFormat}");
+                
+                // Add headers for mobile compatibility
+                Response.Headers["Cache-Control"] = "no-cache, no-store, must-revalidate";
+                Response.Headers["Pragma"] = "no-cache";
+                Response.Headers["Expires"] = "0";
+                Response.Headers["Access-Control-Allow-Origin"] = "*";
+                
+                return response;
             }
             catch (InvalidOperationException ex)
             {
